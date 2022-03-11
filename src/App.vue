@@ -45,7 +45,7 @@ export default {
   methods: {
     getLowInventory() {
       console.log('getting low inventory!');
-      fetch('http://api.westernoregondispensary.com/lowInventory')
+      fetch('https://api.westernoregondispensary.com/lowInventory')
         // fetch("http://192.168.1.2:4000/lowInventory")
         .then((response) => response.json())
         .then((data) => {
