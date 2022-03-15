@@ -13,6 +13,7 @@
         @click="toggleExpandedProductType(store, productType)"
       >
         {{ productType }}
+        ({{ items(store, productType).length }})
       </li>
       <ul v-for="(item, i) in items(store, productType)" :key="item" class="item-list">
         <div
@@ -23,7 +24,7 @@
           <li>Remaining: {{ item.remaining }}</li>
           <div v-if="expansions[store][productType][i].full === true">
             <li>Brand: {{ item.farm }}</li>
-            <li>Price: {{ item.price }}</li>
+            <li>Price: ${{ item.price }}</li>
             <li>Feel: {{ item.type }}</li>
           </div>
         </div>
@@ -89,11 +90,6 @@ export default {
         !this.expansions[store].expanded[productType]);
     },
     toggleShowFullItem(store, productType, i) {
-      // console.log('toggleShowFullItem', store, productType, i);
-      console.log(this.expansions[store][productType][i].full);
-      // this.expansions[store][productType][i].full =
-      //   !this.expansions[store][productType][i].full;
-
       if ('full' in this.expansions[store][productType][i] == false) {
         this.expansions[store][productType][i].full = true;
         console.log('toggleShowFullItem', store, productType, i);
@@ -102,9 +98,6 @@ export default {
           !this.expansions[store][productType][i].full;
       }
     },
-    // storeExpanded() {
-    //   return;
-    // },
   },
   created() {
     this.getLowInventory();
