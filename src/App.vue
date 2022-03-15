@@ -68,9 +68,9 @@ export default {
     initExpandedProps() {
       this.stores.forEach((store) => {
         this.expansions[store].expanded = {};
-        this.expansions[store].expanded.store = true;
+        this.expansions[store].expanded.store = false;
         this.productTypes(store).forEach((productType) => {
-          this.expansions[store].expanded[productType] = true;
+          this.expansions[store].expanded[productType] = false;
         });
       });
     },
