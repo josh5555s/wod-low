@@ -1,7 +1,9 @@
 <template>
   <ul v-for="store in stores" :key="store">
     <li @click="toggleExpandedStore(store)">
-      {{ store }}
+      <a>
+        {{ store }}
+      </a>
     </li>
     <ul
       v-for="productType in productTypes(store)"
@@ -12,21 +14,25 @@
         v-if="isStoreExpanded(store)"
         @click="toggleExpandedProductType(store, productType)"
       >
-        {{ productType }}
-        ({{ items(store, productType).length }})
+        <a>
+          {{ productType }}
+          ({{ items(store, productType).length }})
+        </a>
       </li>
       <ul v-for="(item, i) in items(store, productType)" :key="item" class="item-list">
         <div
           v-if="isStoreExpanded(store) && isProductExpanded(store, productType)"
           @click="toggleShowFullItem(store, productType, i)"
         >
-          <li>Name: {{ item.productName }}</li>
-          <li>Remaining: {{ item.remaining }}</li>
-          <div v-if="expansions[store][productType][i].full === true">
-            <li>Brand: {{ item.farm }}</li>
-            <li>Price: ${{ item.price }}</li>
-            <li>Feel: {{ item.type }}</li>
-          </div>
+          <a>
+            <li>Name: {{ item.productName }}</li>
+            <li>Remaining: {{ item.remaining }}</li>
+            <div v-if="expansions[store][productType][i].full === true">
+              <li>Brand: {{ item.farm }}</li>
+              <li>Price: ${{ item.price }}</li>
+              <li>Feel: {{ item.type }}</li>
+            </div>
+          </a>
         </div>
       </ul>
     </ul>
@@ -119,6 +125,13 @@ ul {
 p {
   display: flex;
   flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  /* display: block;
+     width: 100%;
+     height: 100%; */
 }
 
 .product-list {
