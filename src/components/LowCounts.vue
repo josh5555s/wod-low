@@ -4,6 +4,7 @@
       <li @click="toggleExpandedStore(store)">
         <a>
           {{ store }}
+          {{ storeItemsCount(store) }}
         </a>
       </li>
       <ul
@@ -49,33 +50,40 @@
 
 <script>
 export default {
+  props: ["inventory"],
   data() {
     return {
-      inventory: {},
-      stores: [],
       expansions: {},
+      initialized: false,
     };
   },
-  computed: {},
-  methods: {
-    getLowInventory() {
-      console.log("getting low inventory!");
-      fetch("https://api.westernoregondispensary.com/lowInventory")
-        // fetch("http://192.168.1.2:4000/lowInventory")
-        .then((response) => response.json())
-        .then((data) => {
-          this.inventory = JSON.parse(data);
-          this.stores = Object.keys(this.inventory);
-          this.initExpansionsObj();
-          this.initExpandedProps();
-          console.log(this.inventory);
-        });
+  computed: {
+    stores() {
+      return Object.keys(this.inventory);
     },
+  },
+  methods: {
     productTypes(store) {
       return Object.keys(this.inventory[store]);
     },
     items(store, productType) {
-      return Object.values(this.inventory[store][productType]);
+      return this.inventory[store][productType].filter((item) => {
+        return item.isLowRemaining === true;
+      });
+    },
+    storeItemsCount(store) {
+      let count = 0;
+      this.productTypes(store).forEach((type) => {
+        count += this.items(store, type).length;
+      });
+      return `(${count})`;
+    },
+    initialize() {
+      if (!this.initialized) {
+        this.initExpansionsObj();
+        this.initExpandedProps();
+        this.initialized = true;
+      }
     },
     initExpansionsObj() {
       this.expansions = JSON.parse(JSON.stringify(this.inventory));
@@ -90,7 +98,11 @@ export default {
       });
     },
     isStoreExpanded(store) {
-      return this.expansions[store].expanded.store ? true : false;
+      if (this.initialized) {
+        return this.expansions[store].expanded.store ? true : false;
+      } else {
+        return false;
+      }
     },
     isProductExpanded(store, productType) {
       return this.expansions[store].expanded[productType] ? true : false;
@@ -106,7 +118,6 @@ export default {
     toggleShowFullItem(store, productType, i) {
       if ("full" in this.expansions[store][productType][i] == false) {
         this.expansions[store][productType][i].full = true;
-        console.log("toggleShowFullItem", store, productType, i);
       } else {
         this.expansions[store][productType][i].full =
           !this.expansions[store][productType][i].full;
@@ -114,7 +125,9 @@ export default {
     },
   },
   created() {
-    this.getLowInventory();
+    setTimeout(() => {
+      this.initialize();
+    }, 100);
   },
   mounted() {},
 };

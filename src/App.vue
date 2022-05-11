@@ -1,24 +1,12 @@
 <template>
   <TheHeader @active-button="updateActiveButton" />
 
-  <MissingExpiry
-    v-if="activeButton === 'missing'"
-    :inventory="inventory"
-    :stores="stores"
-    :productTypes="productTypes"
-  />
+  <MissingExpiry v-if="activeButton === 'missing'" :inventory="inventory" />
   <UpcomingExpiry
     v-else-if="activeButton === 'upcoming'"
     :inventory="inventory"
-    :stores="stores"
-    :productTypes="productTypes"
   />
-  <LowCounts
-    v-else-if="activeButton === 'low'"
-    :inventory="inventory"
-    :stores="stores"
-    :productTypes="productTypes"
-  />
+  <LowCounts v-else-if="activeButton === 'low'" :inventory="inventory" />
 </template>
 
 <script>
@@ -39,22 +27,7 @@ export default {
       activeButton: "",
     };
   },
-  computed: {
-    gotInventory() {
-      return this.inventory !== {};
-    },
-    stores() {
-      return Object.keys(this.inventory);
-    },
-    productTypes() {
-      // https://stackoverflow.com/questions/17546953/cant-access-object-property-even-though-it-shows-up-in-a-console-log
-      if (this.inventory.newberg !== undefined) {
-        return Object.keys(JSON.parse(JSON.stringify(this.inventory.newberg)));
-      } else {
-        return "";
-      }
-    },
-  },
+  computed: {},
   methods: {
     updateActiveButton(clickedButton) {
       this.activeButton = clickedButton;
