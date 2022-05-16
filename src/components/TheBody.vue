@@ -34,6 +34,13 @@
           >
             <a>
               <li>Name: {{ item.productName }}</li>
+              <li v-if="activeButton === 'upcoming'">
+                Expiration: {{ expirationDateDisplay(item) }}
+              </li>
+              <li v-else-if="activeButton === 'low'">
+                Remaining: {{ item.remaining }}
+              </li>
+
               <div v-if="expansions[store][productType][i].full === true">
                 <li>Brand: {{ item.farm }}</li>
                 <li>Price: ${{ item.price }}</li>
@@ -49,7 +56,7 @@
 
 <script>
 export default {
-  props: ["inventory"],
+  props: ["inventory", "activeButton"],
   data() {
     return {
       expansions: {},
@@ -62,12 +69,33 @@ export default {
     },
   },
   methods: {
+    expirationDateDisplay(item) {
+      const dateObj = new Date(item.expiration);
+      const month = dateObj.getUTCMonth() + 1; //months from 1-12
+      const day = dateObj.getUTCDate() + 1;
+      const year = dateObj.getUTCFullYear();
+      return month + "/" + day + "/" + year;
+    },
+    showExpirationWarning(productType, item) {
+      // if expiration is withen 30 days or has passed
+      return (
+        productType !== "flower" &&
+        item.expiration !== "" &&
+        new Date(item.expiration).getTime() - new Date().getTime() < 2592000000
+      );
+    },
     productTypes(store) {
       return Object.keys(this.inventory[store]);
     },
     items(store, productType) {
       return this.inventory[store][productType].filter((item) => {
-        return item.expiration === "";
+        if (this.activeButton === "missing") {
+          return item.expiration === "" && productType !== "flower";
+        } else if (this.activeButton === "upcoming") {
+          return this.showExpirationWarning(productType, item);
+        } else if (this.activeButton === "low") {
+          return item.isLowRemaining === true;
+        }
       });
     },
     storeItemsCount(store) {
@@ -129,11 +157,6 @@ export default {
     }, 200);
   },
   mounted() {},
-  // watch: {
-  //   inventory() {
-  //     this.initialize();
-  //   },
-  // },
 };
 </script>
 

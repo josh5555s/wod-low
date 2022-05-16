@@ -1,25 +1,15 @@
 <template>
   <TheHeader @active-button="updateActiveButton" />
-
-  <MissingExpiry v-if="activeButton === 'missing'" :inventory="inventory" />
-  <UpcomingExpiry
-    v-else-if="activeButton === 'upcoming'"
-    :inventory="inventory"
-  />
-  <LowCounts v-else-if="activeButton === 'low'" :inventory="inventory" />
+  <TheBody :inventory="inventory" :activeButton="activeButton" />
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue";
-import MissingExpiry from "./components/MissingExpiry.vue";
-import UpcomingExpiry from "./components/UpcomingExpiry.vue";
-import LowCounts from "./components/LowCounts.vue";
+import TheBody from "./components/TheBody.vue";
 export default {
   components: {
     TheHeader,
-    MissingExpiry,
-    UpcomingExpiry,
-    LowCounts,
+    TheBody,
   },
   data() {
     return {
@@ -27,7 +17,6 @@ export default {
       activeButton: "",
     };
   },
-  computed: {},
   methods: {
     updateActiveButton(clickedButton) {
       this.activeButton = clickedButton;
