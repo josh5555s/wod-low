@@ -151,12 +151,11 @@ export default {
       }
     },
   },
-  created() {
-    setTimeout(() => {
+  watch: {
+    inventory() {
       this.initialize();
-    }, 200);
+    },
   },
-  mounted() {},
 };
 </script>
 
