@@ -52,4 +52,19 @@ export default {
 .low {
   background-color: lightgray;
 }
+
+button {
+  padding: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+  nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button {
+    padding: 15px;
+  }
+}
 </style>
